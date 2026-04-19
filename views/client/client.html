@@ -1,0 +1,320 @@
+<!doctype html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title>Danh mục Thiết bị - Sinh viên</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+    <style>
+        /* Giao diện tổng thể mềm mại */
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        .page-title {
+            font-weight: 800;
+            color: #2d3436;
+            letter-spacing: -0.5px;
+        }
+
+        /* Equipment Card: Bo góc cực lớn và hiệu ứng nổi khối */
+        .equipment-card {
+            border-radius: 25px;
+            border: none;
+            background: #ffffff;
+            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+        }
+
+        .equipment-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(108, 92, 231, 0.15) !important;
+        }
+
+        .card-img-custom {
+            height: 200px;
+            object-fit: cover;
+            border-bottom: 1px solid rgba(0,0,0,0.02);
+            transition: transform 0.5s;
+        }
+
+        .equipment-card:hover .card-img-custom {
+            transform: scale(1.05);
+        }
+
+        /* Badge màu mè hiện đại */
+        .badge-type {
+            background: linear-gradient(45deg, #6c5ce7, #a29bfe);
+            color: white;
+            border-radius: 12px;
+            padding: 6px 14px;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            top: 15px;
+            right: 15px;
+        }
+
+        .badge-stock {
+            background: #ebfaf0;
+            color: #00b894;
+            font-size: 0.9rem;
+            border-radius: 10px;
+            padding: 5px 12px;
+            font-weight: 700;
+        }
+
+        /* Nút bấm Gradient mềm mại */
+        .btn-custom {
+            border-radius: 15px;
+            font-weight: 700;
+            text-transform: none;
+            font-size: 0.9rem;
+            padding: 10px 20px;
+            transition: all 0.3s;
+            border: none;
+        }
+
+        .btn-borrow {
+            background: linear-gradient(135deg, #6c5ce7 0%, #a29bfe 100%);
+            color: white !important;
+            box-shadow: 0 4px 15px rgba(108, 92, 231, 0.3);
+        }
+
+        .btn-borrow:hover {
+            filter: brightness(1.1);
+            box-shadow: 0 8px 25px rgba(108, 92, 231, 0.4);
+        }
+
+        /* Modal "Màu mè" */
+        .modal-content.custom-modal {
+            border-radius: 30px;
+            border: none;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+
+        .modal-header.custom-header {
+            background: linear-gradient(135deg, #6c5ce7 0%, #8e44ad 100%);
+            padding: 1.8rem;
+            border: none;
+        }
+
+        .inner-card {
+            border-radius: 20px;
+            background-color: #f8faff;
+            border: 1px solid #eef2f7;
+            transition: background 0.3s;
+        }
+
+        .inner-card:hover {
+            background-color: #ffffff;
+            border-color: #d1d9e6;
+        }
+
+        .form-control-custom {
+            border-radius: 12px;
+            border: 2px solid #e0e6ed;
+            padding: 12px;
+            background: #fff;
+            transition: all 0.2s;
+        }
+
+        .form-control-custom:focus {
+            border-color: #a29bfe;
+            box-shadow: 0 0 0 4px rgba(162, 155, 254, 0.15);
+            background: #fff;
+        }
+
+        .section-icon-circle {
+            width: 35px;
+            height: 35px;
+            background: #eeeefd;
+            color: #6c5ce7;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px;
+        }
+
+        .btn-approve {
+            background: linear-gradient(135deg, #00b894, #55efc4);
+            color: white !important;
+            border: none;
+            border-radius: 12px;
+            padding: 8px 16px;
+            font-size: 13px;
+            font-weight: 700;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0, 184, 148, 0.2);
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .btn-approve:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 15px rgba(0, 184, 148, 0.3);
+            filter: brightness(1.1);
+        }
+
+        .btn-approve.disabled {
+            background: #dfe6e9;
+            color: #b2bec3 !important;
+            box-shadow: none;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+<div layout:fragment="content" class="container mt-5 mb-5">
+
+    <div>
+        <div class="d-flex justify-content-between align-items-center mb-5 border-bottom pb-4">
+            <h2 class="page-title mb-0">
+                <i class="bi bi-intersect text-primary mr-2"></i>Danh mục Thiết bị IT
+            </h2>
+        </div>
+
+        <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show border-0 shadow-sm mb-5"
+             style="border-radius: 20px; background-color: #ebfaf0; color: #00b894;" role="alert">
+            <div class="d-flex align-items-center">
+                <i class="bi bi-check-circle-fill mr-3" style="font-size: 1.5rem;"></i>
+                <strong th:text="${successMessage}"></strong>
+            </div>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-6 col-md-4 col-lg-3 mb-5" th:each="item : ${equipments}">
+                <div class="card h-100 equipment-card shadow-sm">
+                    <div class="position-relative overflow-hidden" style="border-radius: 25px 25px 0 0;">
+                        <img th:src="@{'/display-images/' + ${item.image != null ? item.image : 'default.png'}}"
+                             class="card-img-top card-img-custom" alt="Hình ảnh">
+                        <span class="badge-type position-absolute shadow-sm" th:text="${item.type}">Loại</span>
+                    </div>
+
+                    <div class="card-body d-flex flex-column p-4">
+                        <h5 class="card-title text-dark font-weight-bold mb-3" th:text="${item.name}">Tên thiết bị</h5>
+                        <div class="d-flex align-items-center mb-4">
+                            <i class="bi bi-box-fill text-muted mr-2"></i>
+                            <span class="badge-stock" th:text="${item.stock} + ' chiếc'">0</span>
+                        </div>
+
+                        <button class="btn btn-borrow btn-custom w-100 mt-auto"
+                                data-toggle="modal"
+                                th:data-target="'#borrowModal' + ${item.id}">
+                            Đăng ký mượn <i class="bi bi-arrow-right-short ml-1"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="modal fade borrow-modal" th:id="'borrowModal' + ${item.id}" tabindex="-1" data-backdrop="static">
+                    <div class="modal-dialog modal-lg modal-dialog-centered">
+                        <div class="modal-content custom-modal">
+                            <form th:action="@{/student/borrow}" th:object="${equipmentFormRequest}" method="POST">
+                                <input type="hidden" name="equipmentId" th:value="${item.id}" />
+
+                                <div class="modal-header custom-header text-white">
+                                    <h5 class="modal-title font-weight-bold">
+                                        <i class="bi bi-pencil-square mr-2"></i>Phiếu Đăng Ký Mượn
+                                    </h5>
+                                    <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close" style="opacity: 1; outline: none;">
+                                        <span aria-hidden="true" style="font-size: 1.5rem;">&times;</span>
+                                    </button>
+                                </div>
+
+                                <div class="modal-body p-4 bg-white">
+                                    <div class="text-center mb-5 mt-2">
+                                        <h3 class="font-weight-bold" style="color: #6c5ce7;" th:text="${item.name}">Tên thiết bị</h3>
+                                        <span class="badge badge-light border text-muted px-4 py-2 rounded-pill">Kho hiện tại: <strong class="text-dark" th:text="${item.stock}"></strong></span>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-6 mb-4 mb-md-0">
+                                            <div class="inner-card p-4 h-100">
+                                                <div class="d-flex align-items-center mb-4">
+                                                    <div class="section-icon-circle"><i class="bi bi-person"></i></div>
+                                                    <h6 class="text-dark font-weight-bold mb-0">Sinh viên</h6>
+                                                </div>
+                                                <div class="form-group mb-4">
+                                                    <label class="font-weight-bold small text-muted">HỌ VÀ TÊN</label>
+                                                    <input type="text" class="form-control form-control-custom" th:field="*{fullName}" th:errorclass="is-invalid" placeholder="Nguyễn Văn A">
+                                                    <div class="invalid-feedback" th:if="${#fields.hasErrors('fullName')}" th:errors="*{fullName}"></div>
+                                                </div>
+                                                <div class="form-group mb-4">
+                                                    <label class="font-weight-bold small text-muted">MÃ SINH VIÊN</label>
+                                                    <input type="text" class="form-control form-control-custom" th:field="*{studentId}" th:errorclass="is-invalid" placeholder="B21DCCNxxx">
+                                                    <div class="invalid-feedback" th:if="${#fields.hasErrors('studentId')}" th:errors="*{studentId}"></div>
+                                                </div>
+                                                <div class="form-group mb-0">
+                                                    <label class="font-weight-bold small text-muted">EMAIL LIÊN HỆ</label>
+                                                    <input type="email" class="form-control form-control-custom" th:field="*{email}" th:errorclass="is-invalid" placeholder="abc@stu.ptit.edu.vn">
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <div class="inner-card p-4 h-100">
+                                                <div class="d-flex align-items-center mb-4">
+                                                    <div class="section-icon-circle"><i class="bi bi-calendar-check"></i></div>
+                                                    <h6 class="text-dark font-weight-bold mb-0">Chi tiết mượn</h6>
+                                                </div>
+                                                <div class="form-group mb-4">
+                                                    <label class="font-weight-bold small text-muted">SỐ LƯỢNG</label>
+                                                    <input type="number" class="form-control form-control-custom" th:field="*{quantity}" th:errorclass="is-invalid" min="1">
+                                                    <div class="invalid-feedback" th:if="${#fields.hasErrors('quantity')}"
+                                                         th:errors="*{quantity}"></div>
+                                                </div>
+                                                <div class="form-row mb-4">
+                                                    <div class="form-group col-md-6">
+                                                        <label class="font-weight-bold small text-muted">NGÀY MƯỢN</label>
+                                                        <input type="date" class="form-control form-control-custom" th:field="*{borrowDate}" th:errorclass="is-invalid">
+                                                    </div>
+                                                    <div class="form-group col-md-6">
+                                                        <label class="font-weight-bold small text-muted">NGÀY TRẢ</label>
+                                                        <input type="date" class="form-control form-control-custom" th:field="*{returnDate}" th:errorclass="is-invalid">
+                                                    </div>
+                                                </div>
+                                                <div class="form-group mb-0">
+                                                    <label class="font-weight-bold small text-muted">LÝ DO MƯỢN</label>
+                                                    <textarea class="form-control form-control-custom" rows="2" th:field="*{reason}" placeholder="Phục vụ nghiên cứu..."></textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="modal-footer bg-light border-0 p-4 justify-content-center">
+                                    <button type="button" class="btn btn-light rounded-pill px-4 mr-3" data-dismiss="modal">Để sau</button>
+                                    <button type="submit" class="btn btn-borrow btn-custom px-5">
+                                        <i class="bi bi-send mr-2"></i> Gửi yêu cầu ngay
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div th:if="${equipments == null or equipments.isEmpty()}" class="text-center py-5">
+            <div class="p-5 bg-white rounded-lg shadow-sm d-inline-block mt-4" style="border: 2px dashed #dee2e6; border-radius: 30px !important;">
+                <i class="bi bi-cloud-slash text-muted" style="font-size: 4rem;"></i>
+                <h4 class="mt-3 text-secondary font-weight-bold">Kho đồ trống</h4>
+                <p class="text-muted mb-0">Chúng tôi sẽ cập nhật thêm thiết bị sớm nhất!</p>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

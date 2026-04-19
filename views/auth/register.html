@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng ký thành viên</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Roboto, sans-serif;
+        }
+
+        body {
+            /* Màu nền chuyển sắc mềm mại hơn */
+            background: linear-gradient(135deg, #e0eafc 0%, #cfdef3 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .constant-values-container {
+            background-color: #ffffff;
+            padding: 40px;
+            /* Bo góc cực mềm */
+            border-radius: 20px;
+            /* Đổ bóng sâu và mịn hơn */
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+            width: 100%;
+            max-width: 420px;
+            transition: transform 0.3s ease;
+        }
+
+        .constant-values-container:hover {
+            transform: translateY(-5px);
+        }
+
+        h3 {
+            text-align: center;
+            /* Màu chữ xanh đậm hiện đại */
+            color: #2d3436;
+            margin-bottom: 30px;
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #636e72;
+            font-weight: 500;
+            font-size: 14px;
+            padding-left: 5px;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #f1f3f5;
+            /* Bo tròn ô nhập liệu */
+            border-radius: 12px;
+            font-size: 15px;
+            background-color: #f8f9fa;
+            transition: all 0.3s ease;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #74b9ff;
+            background-color: #ffffff;
+            box-shadow: 0 0 0 4px rgba(116, 185, 255, 0.15);
+        }
+
+        .error-msg {
+            display: block;
+            margin-top: 6px;
+            font-size: 12px;
+            font-weight: 500;
+            padding-left: 5px;
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            /* Nút bấm chuyển màu (Gradient) */
+            background: linear-gradient(to right, #6c5ce7, #a29bfe);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(108, 92, 231, 0.3);
+            transition: all 0.3s ease;
+            margin-top: 15px;
+        }
+
+        button:hover {
+            background: linear-gradient(to right, #5f27cd, #6c5ce7);
+            transform: scale(1.02);
+            box-shadow: 0 6px 20px rgba(108, 92, 231, 0.4);
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        .footer-link {
+            text-align: center;
+            margin-top: 25px;
+            font-size: 14px;
+            color: #b2bec3;
+        }
+
+        .footer-link a {
+            color: #6c5ce7;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.2s;
+        }
+
+        .footer-link a:hover {
+            color: #5f27cd;
+            text-decoration: underline;
+        }
+
+        @media (max-width: 480px) {
+            .constant-values-container {
+                margin: 20px;
+                padding: 30px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="constant-values-container">
+    <h3>Đăng ký</h3>
+    <form th:action="@{/auth/register}" th:object="${user}" method="post">
+        <div class="form-group">
+            <label for="fullname">Họ Tên</label>
+            <input type="text" th:field="*{fullName}" id="fullname" placeholder="Nhập đầy đủ họ tên">
+            <small class="error-msg" style="color:red" th:if="${#fields.hasErrors('fullName')}"
+                   th:errors="*{fullName}"></small>
+        </div>
+
+        <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" th:field="*{email}" id="email" placeholder="Địa chỉ email">
+            <small class="error-msg" style="color:red" th:if="${#fields.hasErrors('email')}"
+                   th:errors="*{email}"></small>
+        </div>
+
+        <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" th:field="*{password}" id="password" placeholder="Mật khẩu">
+            <small class="error-msg" style="color:red" th:if="${#fields.hasErrors('password')}"
+                   th:errors="*{password}"></small>
+        </div>
+
+        <div class="form-group">
+            <label for="confirmPassword">Xác nhận mật khẩu</label>
+            <input type="password" th:field="*{confirmPassword}" id="confirmPassword" placeholder="Nhập lại mật khẩu">
+            <small class="error-msg" style="color:red"
+                   th:if="${#fields.hasErrors('confirmPassword')}"
+                   th:errors="*{confirmPassword}"></small>
+        </div>
+
+
+        <button type="submit">Đăng ký</button>
+
+        <div class="footer-link">
+            Đã có tài khoản? <a th:href="@{/auth/login}">Đăng nhập ngay</a>
+        </div>
+    </form>
+</div>
+
+</body>
+</html>
