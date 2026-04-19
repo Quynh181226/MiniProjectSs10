@@ -1,0 +1,65 @@
+package com.Ss10.MiniProject2.equipmentborrowingmana.config;
+
+import nz.net.ultraq.thymeleaf.layoutdialect.LayoutDialect;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.multipart.MultipartResolver;
+import org.springframework.web.multipart.support.StandardServletMultipartResolver;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.thymeleaf.spring6.SpringTemplateEngine;
+import org.thymeleaf.spring6.templateresolver.SpringResourceTemplateResolver;
+import org.thymeleaf.spring6.view.ThymeleafViewResolver;
+import org.thymeleaf.templatemode.TemplateMode;
+
+import java.io.File;
+
+@Configuration
+@EnableWebMvc
+@ComponentScan(basePackages = "com.Ss10.MiniProject2.equipmentborrowingmana")
+public class WebConfig implements WebMvcConfigurer {
+    @Bean
+    public SpringResourceTemplateResolver springResourceTemplateResolver() {
+        SpringResourceTemplateResolver springResourceTemplateResolver = new SpringResourceTemplateResolver();
+        springResourceTemplateResolver.setPrefix("/WEB-INF/views/");
+        springResourceTemplateResolver.setSuffix(".html");
+        springResourceTemplateResolver.setTemplateMode(TemplateMode.HTML);
+        springResourceTemplateResolver.setCharacterEncoding("UTF-8");
+        return springResourceTemplateResolver;
+    }
+
+    @Bean
+    public SpringTemplateEngine springTemplateEngine() {
+        SpringTemplateEngine springTemplateEngine = new SpringTemplateEngine();
+        springTemplateEngine.setTemplateResolver(springResourceTemplateResolver());
+        // QUAN TRỌNG: Thêm dòng này để kích hoạt tính năng Layout
+        springTemplateEngine.addDialect(new LayoutDialect());
+        return springTemplateEngine;
+    }
+
+    @Bean
+    public ThymeleafViewResolver thymeleafViewResolver() {
+        ThymeleafViewResolver viewResolver = new ThymeleafViewResolver();
+        viewResolver.setTemplateEngine(springTemplateEngine());
+        viewResolver.setCharacterEncoding("UTF-8");
+        return viewResolver;
+    }
+
+    @Bean
+    public MultipartResolver multipartResolver() {
+        return new StandardServletMultipartResolver();
+    }
+
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        String rootPath = System.getProperty("user.dir");
+        String uploadPath = rootPath + File.separator + "uploads" + File.separator + "images" + File.separator;
+        System.out.println("root : " + rootPath);
+        System.out.println("upload : " + uploadPath);
+
+        registry.addResourceHandler("/display-images/**")
+                .addResourceLocations("file:" + uploadPath);
+    }
+}
